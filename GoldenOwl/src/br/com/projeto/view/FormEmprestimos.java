@@ -9,11 +9,13 @@ package br.com.projeto.view;
 import br.com.projeto.dao.EmprestimoDao;
 import javax.swing.SwingConstants;
 import br.com.projeto.dao.LivroDao;
+import br.com.projeto.dao.MultaDao;
 import br.com.projeto.dao.UsuarioDao;
 import br.com.projeto.model.DateRenderer;
 import br.com.projeto.model.Emprestimo;
 import br.com.projeto.model.Funcionario;
 import br.com.projeto.model.Livro;
+import br.com.projeto.model.Multa;
 import br.com.projeto.model.Usuario;
 import br.com.projeto.model.Utilitarios;
 import java.awt.Color;
@@ -126,9 +128,41 @@ public class FormEmprestimos extends javax.swing.JFrame {
                 c.getData_devolucao(),});
         }
     }
+
+    public void listarDevolucoesCompact() throws Exception {
+        EmprestimoDao dao = new EmprestimoDao();
+        List<Emprestimo> lista = dao.buscarDevolucoes();
+        DefaultTableModel dados1 = (DefaultTableModel) tabelaDevolucoes.getModel();
+        dados1.setNumRows(0);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        for (Emprestimo c : lista) {
+            String atraso = dao.campoStatusColor(c.getData_devolucao(), c.getAtraso());
+            // System.out.println("atraso=" +atraso);
+            // Timestamp data_devolucao = c.getData_devolucao();
+            // System.out.println("data_devolucao=" +data_devolucao);
+            if (/*data_devolucao != null &&atraso == 0*/!atraso.equals("Devolvido")) {
+
+                dados1.addRow(new Object[]{
+                    dao.campoStatusColor(c.getData_devolucao(), c.getAtraso()),
+                    c.getId(),
+                    c.getTb_leitores_id().getNome(), //muda o setTetTb_leitores_id do Emprestimo.java para o tipo Usuario
+                    c.getTb_livros_id().getTitulo(),//
+                    c.getTb_funcionarios_id().getNome(),//
+                    formatter.format(c.getData_emprestimo()),
+                    formatter.format(c.getData_entrega_agendada()),
+                    c.getObservacoes(),
+                    c.getData_devolucao(),});
+            } else {
+                continue;
+            }
+        }
+    }
+
+//    if (data_devolucao != null && atraso == 0) {
+//            String d = "Devolvido";
+//            return d;
     // #################################################################
     //add disponibilidade leitor localizacao e observações
-
     public void listarLivrosFiltro() throws Exception {
         LivroDao dao = new LivroDao();
         List<Livro> lista = dao.buscarLivros();
@@ -299,7 +333,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        radioLista = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -319,9 +353,9 @@ public class FormEmprestimos extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1058, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -987,6 +1021,11 @@ public class FormEmprestimos extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnImprimeMulta.setText("Imprime Multa");
+        btnImprimeMulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimeMultaActionPerformed(evt);
+            }
+        });
 
         btnDesbloqueiaUsuario.setText("Desbloqueia Usuário");
 
@@ -1033,7 +1072,12 @@ public class FormEmprestimos extends javax.swing.JFrame {
 
         jRadioButton1.setText("Add Observações como permanente  para o Livro");
 
-        jRadioButton2.setText("Mostrar Devolvidos");
+        radioLista.setText("Mostrar Devolvidos");
+        radioLista.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radioListaItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -1113,14 +1157,14 @@ public class FormEmprestimos extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jRadioButton2)
+                .addComponent(radioLista)
                 .addGap(16, 16, 16))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(jRadioButton2)
+                .addComponent(radioLista)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1321,12 +1365,11 @@ public class FormEmprestimos extends javax.swing.JFrame {
             Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
         }
         Date agora = new Date();
-
         SimpleDateFormat dataBR = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String dataFormatada = dataBR.format(agora);
         txtAgora.setText(String.valueOf(dataFormatada));
         try {
-            listarDevolucoes();
+            listarDevolucoesCompact();
         } catch (Exception ex) {
             Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1688,6 +1731,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCartaoActionPerformed
 
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
+
         String se_devolvido = StatusEmprestimo.getText();
         if (se_devolvido.equals("Devolvido")) {
             JOptionPane.showMessageDialog(null, " Livro já foi devolvido");
@@ -1747,6 +1791,48 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private void txtIdEmprestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdEmprestActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIdEmprestActionPerformed
+
+    private void radioListaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radioListaItemStateChanged
+        if (radioLista.isSelected()) {
+            try {
+                listarDevolucoes();
+            } catch (Exception ex) {
+                Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                listarDevolucoesCompact();
+            } catch (Exception ex) {
+                Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_radioListaItemStateChanged
+
+    private void btnImprimeMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimeMultaActionPerformed
+        try {
+            EmprestimoDao empDao = new EmprestimoDao();
+            Multa multa = new Multa();
+            UsuarioDao user = new UsuarioDao();
+
+            multa.setTb_emprestimos_id(Integer.parseInt(txtIdEmprest.getText()));
+            multa.setDias_atraso(empDao.calculaAtraso(multa.getTb_emprestimos_id()));
+            multa.setValor_multa(empDao.calculaMulta(multa.getDias_atraso()));
+            multa.setTb_leitores_id(user.pegaUserIdpeloNome(txtLeitorresponsavel.getText()));
+
+            MultaDao multaDao = new MultaDao();
+            System.out.println("iddo emprestimo para comparar" +Integer.parseInt(txtIdEmprest.getText()));
+            if (multaDao.seJaExiste((Integer.parseInt(txtIdEmprest.getText()))) == false) {
+                multaDao.cadastrarMulta(multa);
+            } 
+            int msgEmpId = multa.getTb_emprestimos_id();
+            FormMulta formulta = new FormMulta(msgEmpId);
+            formulta.pack();
+            formulta.setLocationRelativeTo(null);
+            formulta.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnImprimeMultaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1849,7 +1935,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1859,6 +1944,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JLabel lblImagem;
     private javax.swing.JLabel lblimagemUser;
+    private javax.swing.JRadioButton radioLista;
     private javax.swing.JPanel tabCadastro;
     private javax.swing.JPanel tabConsultaUsuarios;
     private javax.swing.JTable tabelaDevolucoes;

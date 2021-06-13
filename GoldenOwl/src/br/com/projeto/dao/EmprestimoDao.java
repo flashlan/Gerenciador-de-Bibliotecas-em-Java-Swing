@@ -298,8 +298,7 @@ System.out.println("now =" + now + "/ valorsubtraido=" + valorsubtraido + "/ con
         Timestamp timestamp = null;
         String value = "";
         String sql = "select * from tb_emprestimos where id = " + id_do_emprestimo; // substituir por ? e stmt.setInt(1,data dá erro, ver o pq
-        try (java.sql.PreparedStatement stmt = conexao.prepareStatement(sql) //createStatment nao suporta placeholders
-                ) {
+        try (java.sql.PreparedStatement stmt = conexao.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 value = rs.getString("data_devolucao");

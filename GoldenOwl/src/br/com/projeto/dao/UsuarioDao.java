@@ -14,6 +14,7 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -97,7 +98,7 @@ public class UsuarioDao {
             stmt.setInt(16, obj.getEmprestmax());
             stmt.setString(17, obj.getObservacoes());
             stmt.setString(18, obj.getTipo());
-            
+
             stmt.setInt(19, obj.getId());
 
             // 3 - executar
@@ -272,5 +273,18 @@ public class UsuarioDao {
         return null;
     }
 
-    //função adiciona emprestimo no contador do usuario
+    public int pegaUserIdpeloNome(String nome) throws SQLException {
+        int id = 0;
+        String sql = "select * from tb_leitores where nome = ?";
+        java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);
+        stmt.setString(1, nome);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) { 
+            id = rs.getInt("id");
+        }
+        stmt.close();
+        return id;
+    }
+
+//função adiciona emprestimo no contador do usuario
 }
