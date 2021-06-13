@@ -220,13 +220,13 @@ public class EmprestimoDao {
     }
 
     public void devolveLivro(int emprestimoId) throws SQLException, IOException {// não passa como objeto pois saida dos campos teve pós-formatação dos dados
-            //as vezes precisa 2x ou mais para devolver
+            //esta sobreescrevendo nome de funcionario pelo numero precisa gravar tb_funcionarios_iddevol
             //implemet limpa tela
         String sql = "update tb_emprestimos as e "
                 + " INNER JOIN tb_leitores AS u ON (e.tb_leitores_id = u.id) "
-                + " INNER JOIN tb_funcionarios AS f ON(e.tb_funcionarios_id = f.id) "
+               // + " INNER JOIN tb_funcionarios AS f ON(e.tb_funcionarios_id = f.id) "
                 + " INNER JOIN tb_livros AS l ON(e.tb_livros_id = l.id) "
-                + " set e.data_devolucao = ?, f.nome = ?,  l.is_emprestado = ? "
+                + " set e.data_devolucao = ?, e.tb_funcionarios_iddevol = ?,  l.is_emprestado = ? "
                 + " where e.id = ? ";
         java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);
         Timestamp tmsp = new Timestamp(System.currentTimeMillis());
@@ -315,8 +315,7 @@ System.out.println("now =" + now + "/ valorsubtraido=" + valorsubtraido + "/ con
     public int getEmprestimoFKeyData(String tabelaInt, int id_do_emprestimo) throws SQLException {
         int value = 0;
         String sql = "select * from tb_emprestimos where id = " + id_do_emprestimo; // substituir por ? e stmt.setInt(1,data dá erro, ver o pq
-        try (java.sql.PreparedStatement stmt = conexao.prepareStatement(sql) //createStatment nao suporta placeholders
-                ) {
+        try (java.sql.PreparedStatement stmt = conexao.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 value = Integer.parseInt(rs.getString(tabelaInt));

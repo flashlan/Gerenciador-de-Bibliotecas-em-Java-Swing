@@ -76,7 +76,7 @@ public class FormMulta extends javax.swing.JFrame {
         txtDiasAtraso = new javax.swing.JTextField();
         txtNomeLivro = new javax.swing.JTextField();
         txtValorMulta = new javax.swing.JTextField();
-        brnReceberMulta = new javax.swing.JButton();
+        btnReceberMulta = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -116,10 +116,10 @@ public class FormMulta extends javax.swing.JFrame {
             }
         });
 
-        brnReceberMulta.setText("Receber");
-        brnReceberMulta.addActionListener(new java.awt.event.ActionListener() {
+        btnReceberMulta.setText("Receber");
+        btnReceberMulta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                brnReceberMultaActionPerformed(evt);
+                btnReceberMultaActionPerformed(evt);
             }
         });
 
@@ -162,7 +162,7 @@ public class FormMulta extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(brnReceberMulta)
+                .addComponent(btnReceberMulta)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addGap(12, 12, 12))
@@ -194,7 +194,7 @@ public class FormMulta extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton1)
                         .addComponent(jButton2)
-                        .addComponent(brnReceberMulta)))
+                        .addComponent(btnReceberMulta)))
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
@@ -256,8 +256,14 @@ public class FormMulta extends javax.swing.JFrame {
         //pegar dados de user
     }//GEN-LAST:event_formWindowActivated
 
-    private void brnReceberMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brnReceberMultaActionPerformed
-        try {
+    private void btnReceberMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceberMultaActionPerformed
+        String multa = txtValorMulta.getText();
+        if (!multa.equals("Em dia")) {
+
+            Utilitarios util = new Utilitarios();
+            int i = util.okcancel("Confirma o recebimento do valor de " + multa+ ", Recebimento do Livro e desbloqueio do usuário?");
+             System.out.println("ret : " + i);
+             try {
             EmprestimoDao devEmpres = new EmprestimoDao();
             MultaDao multaDao = new MultaDao();
             devEmpres.devolveLivro(Integer.parseInt(txtEmprestimoId.getText()));
@@ -265,7 +271,11 @@ public class FormMulta extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_brnReceberMultaActionPerformed
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Não há multa registrada" );
+        }
+    }//GEN-LAST:event_btnReceberMultaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -303,7 +313,7 @@ public class FormMulta extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton brnReceberMulta;
+    private javax.swing.JButton btnReceberMulta;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

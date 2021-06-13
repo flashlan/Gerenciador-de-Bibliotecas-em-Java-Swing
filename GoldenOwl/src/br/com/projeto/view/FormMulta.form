@@ -89,7 +89,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="brnReceberMulta" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnReceberMulta" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
@@ -127,7 +127,7 @@
                       <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                           <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="brnReceberMulta" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnReceberMulta" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace pref="10" max="32767" attributes="0"/>
@@ -191,12 +191,12 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtValorMulta">
         </Component>
-        <Component class="javax.swing.JButton" name="brnReceberMulta">
+        <Component class="javax.swing.JButton" name="btnReceberMulta">
           <Properties>
             <Property name="text" type="java.lang.String" value="Receber"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="brnReceberMultaActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReceberMultaActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
