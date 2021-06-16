@@ -234,7 +234,7 @@ public class LivroDao {
             List<Livro> lista = new ArrayList<>();
             String sql = "select p.id, p.titulo, p.autor, p.editora, p.isbn, p.ano, p.serie,"
                     + " p.edicao, p.idioma, f.nome, p.piso, p.corredor,"
-                    + " p.posicao, p.secao, p.disponibilidade, p.observacoes  from tb_livros as p inner join tb_fornecedores as "
+                    + " p.posicao, p.secao, p.disponibilidade, p.observacoes, p.is_emprestado  from tb_livros as p inner join tb_fornecedores as "
                     + "f on(p.tb_fornecedores_id=f.id)";
             PreparedStatement stmt = (PreparedStatement) conexao.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
@@ -258,6 +258,7 @@ public class LivroDao {
                 obj.setSecao(rs.getString("p.secao"));
                 obj.setDisponibilidade(rs.getInt("p.disponibilidade")); //adiconado p
                 obj.setObservacoes(rs.getString("p.observacoes"));//adicionado p
+                obj.setEmprestado(rs.getBoolean("p.is_emprestado"));
                 lista.add(obj);
             }
             return lista;
@@ -297,4 +298,17 @@ public class LivroDao {
         System.out.println("value fora- " + value);
         return value;
     }
+    
+    public void addObservacoes(String data, int livroid) throws SQLException {
+        
+        String sql = "UPDATE tb_livros SET observacoes = '"+ data + "'  where id =" + livroid;
+        try {
+            java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

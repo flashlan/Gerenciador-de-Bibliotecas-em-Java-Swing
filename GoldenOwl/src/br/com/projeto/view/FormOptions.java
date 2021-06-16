@@ -652,12 +652,14 @@ public class FormOptions extends javax.swing.JFrame {
 
     //combobox Piso
     private void boxPisoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxPisoMouseClicked
+        String boxPisoString = (String) boxPiso.getSelectedItem();
+        boxPiso.removeAllItems();
         OptionsDao dao = new OptionsDao();
         List<Options> ListaOptions = dao.listarPiso();
-        boxPiso.removeAllItems();
         for (Options f : ListaOptions) {
-            boxPiso.addItem(f.getPiso());
+            boxPiso.insertItemAt(f.getPiso(), boxPiso.getItemCount());
         }
+        boxPiso.setSelectedItem(boxPisoString);
     }//GEN-LAST:event_boxPisoMouseClicked
 
     //botao excluir piso

@@ -137,10 +137,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         for (Emprestimo c : lista) {
             String atraso = dao.campoStatusColor(c.getData_devolucao(), c.getAtraso());
-            // System.out.println("atraso=" +atraso);
-            // Timestamp data_devolucao = c.getData_devolucao();
-            // System.out.println("data_devolucao=" +data_devolucao);
-            if (/*data_devolucao != null &&atraso == 0*/!atraso.equals("Devolvido")) {
+            if (!atraso.equals("Devolvido")) {
 
                 dados1.addRow(new Object[]{
                     dao.campoStatusColor(c.getData_devolucao(), c.getAtraso()),
@@ -170,14 +167,34 @@ public class FormEmprestimos extends javax.swing.JFrame {
         dados.setNumRows(0);
         for (Livro c : lista) {
             dados.addRow(new Object[]{
-                c.getTitulo(),
                 c.getDisponibilidade(),
-                //c.getDisponibilidade(), // + " Dias", //implemntar se esta emprestado (o = leitura interna apenas)
-                c.getFornecedor(), //trocar para ususario que emprestou
+                c.getTitulo(),
+                //trocar para ususario que emprestou
                 c.getObservacoes(),
                 c.getSecao(),
                 c.getId(),
-                c.getIsbn(),});
+                c.getIsbn(),
+                c.isEmprestado(),});
+        }
+
+    }
+
+    public void listarLivrosFiltroCompact() throws Exception {
+        LivroDao dao = new LivroDao();
+        List<Livro> lista = dao.buscarLivros();
+        DefaultTableModel dados = (DefaultTableModel) tabelaLivrosFiltro.getModel();
+        dados.setNumRows(0);
+        for (Livro c : lista) {
+            if (c.isEmprestado() == false) {
+                dados.addRow(new Object[]{
+                    c.getDisponibilidade(),
+                    c.getTitulo(),
+                    c.getObservacoes(),
+                    c.getSecao(),
+                    c.getId(),
+                    c.getIsbn(),
+                    c.isEmprestado(),});
+            }
         }
     }
 
@@ -220,7 +237,35 @@ public class FormEmprestimos extends javax.swing.JFrame {
         tabelaEmprestimos = new javax.swing.JTable();
         btnBuscaUser = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
-        tabelaLivrosFiltro = new javax.swing.JTable();
+        tabelaLivrosFiltro = new javax.swing.JTable()
+        /*
+        {
+            @Override
+            public Component prepareRenderer (TableCellRenderer renderer, int rowIndex, int columnIndex){
+                Component componenet = super.prepareRenderer(renderer, rowIndex, columnIndex);
+                Object value = getModel().getValueAt(rowIndex,columnIndex);
+
+                System.out.println("value ===" +value);
+                if(columnIndex == 6){
+                    if(value.equals("true"))
+                    {
+                        componenet.setBackground(Color.RED);
+                        componenet.setForeground(Color.GREEN);
+                    }
+                    if(value.equals("false")){
+                        componenet.setBackground(Color.GREEN);
+                        componenet.setForeground(Color.RED);
+                    }
+                }else {
+                    componenet.setBackground(Color.WHITE);
+                    componenet.setForeground(Color.BLACK);
+                }
+                return componenet;
+            }
+
+        }
+        */
+        ;
         txtBuscaLivro = new javax.swing.JTextField();
         txtAgora = new javax.swing.JTextField();
         txtPrazoEntrega = new javax.swing.JTextField();
@@ -235,13 +280,10 @@ public class FormEmprestimos extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         btnRemoveBook = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
-        btnExcluir = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        cbOcultarEmprestados = new javax.swing.JCheckBox();
         jButton5 = new javax.swing.JButton();
-        btnImprimir = new javax.swing.JButton();
-        btnEditar = new javax.swing.JButton();
         btnNovo = new javax.swing.JButton();
         lblImagem = new javax.swing.JLabel();
         txtISBN = new javax.swing.JTextField();
@@ -257,6 +299,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
         btnDetalhes = new javax.swing.JButton();
         btnBuscarLivrosAdvanced = new javax.swing.JButton();
         txtDisponibilidade = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tabelaDevolucoes = new javax.swing.JTable()
@@ -310,7 +353,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
         btnDevolver = new javax.swing.JButton();
         btnReemprestar = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
         btnImprimeMulta = new javax.swing.JButton();
         btnDesbloqueiaUsuario = new javax.swing.JButton();
         txtIdEmprest = new javax.swing.JTextField();
@@ -332,7 +374,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        radbtnAddObs = new javax.swing.JRadioButton();
         radioLista = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -360,7 +402,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         wdwEmprestimos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -440,7 +482,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
                     .addGroup(tabConsultaUsuariosLayout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtPesquisaUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                        .addComponent(txtPesquisaUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(btnPesquisar)
                         .addGap(618, 618, 618))))
@@ -454,7 +496,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
                     .addComponent(txtPesquisaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPesquisar))
                 .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
         );
 
         wdwEmprestimos.addTab("Consulta de Usuário", tabConsultaUsuarios);
@@ -519,7 +561,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
                 .addComponent(txtPesquisaLivros, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnPesquisar1)
-                .addContainerGap(422, Short.MAX_VALUE))
+                .addContainerGap(337, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2)
@@ -534,7 +576,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
                     .addComponent(btnPesquisar1))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         wdwEmprestimos.addTab("Consulta de Livro", jPanel2);
@@ -589,11 +631,11 @@ public class FormEmprestimos extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Título", "Disponibilidade", "leitor atual", "Observações", "Localização", "Cod", "ISBN"
+                "Disponibilidade", "Título", "Observações", "Localização", "Cod", "ISBN", "Emprestado"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false, false, false
+                false, false, true, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -607,8 +649,10 @@ public class FormEmprestimos extends javax.swing.JFrame {
             }
         });
         jScrollPane5.setViewportView(tabelaLivrosFiltro);
-        tabelaLivrosFiltro.getColumn(tabelaLivrosFiltro.getColumnName(1)).setPreferredWidth(140);
-        tabelaLivrosFiltro.getColumn(tabelaLivrosFiltro.getColumnName(0)).setPreferredWidth(170);
+        tabelaLivrosFiltro.getColumn(tabelaLivrosFiltro.getColumnName(0)).setPreferredWidth(34);
+        tabelaLivrosFiltro.getColumn(tabelaLivrosFiltro.getColumnName(1)).setPreferredWidth(170);
+        tabelaLivrosFiltro.getColumn(tabelaLivrosFiltro.getColumnName(2)).setPreferredWidth(150);
+        tabelaLivrosFiltro.getColumn(tabelaLivrosFiltro.getColumnName(3)).setPreferredWidth(140);
 
         txtBuscaLivro.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -626,15 +670,25 @@ public class FormEmprestimos extends javax.swing.JFrame {
 
         txtPrazoEntrega.setEditable(false);
         txtPrazoEntrega.setForeground(new java.awt.Color(102, 102, 102));
+        txtPrazoEntrega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrazoEntregaActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Data para  Devolução:");
 
         jLabel6.setText("Data Atual:");
 
-        jLabel7.setText("Livro:");
+        jLabel7.setText("Livro ID:");
 
         txtTituloSelect.setEditable(false);
         txtTituloSelect.setForeground(new java.awt.Color(102, 102, 102));
+        txtTituloSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTituloSelectActionPerformed(evt);
+            }
+        });
 
         brnAddLivro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/right_small.png"))); // NOI18N
         brnAddLivro.setText("<html>Adicionar   à Lista");
@@ -673,15 +727,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
             }
         });
 
-        btnExcluir.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/delete_small.png"))); // NOI18N
-        btnExcluir.setText("EXCLUIR");
-        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExcluirActionPerformed(evt);
-            }
-        });
-
         jLabel2.setText("ID de Usuário:");
 
         txtId.setEditable(false);
@@ -692,26 +737,14 @@ public class FormEmprestimos extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setText("Mostrar Emprestados");
+        cbOcultarEmprestados.setText("Ocultar Emprestados");
+        cbOcultarEmprestados.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbOcultarEmprestadosItemStateChanged(evt);
+            }
+        });
 
         jButton5.setText("Mapa");
-
-        btnImprimir.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/print_small.png"))); // NOI18N
-        btnImprimir.setText("IMPRIMIR");
-        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImprimirActionPerformed(evt);
-            }
-        });
-
-        btnEditar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnEditar.setText("EDITAR");
-        btnEditar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditarActionPerformed(evt);
-            }
-        });
 
         btnNovo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnNovo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/new_file_small.png"))); // NOI18N
@@ -727,6 +760,11 @@ public class FormEmprestimos extends javax.swing.JFrame {
 
         txtISBN.setEditable(false);
         txtISBN.setForeground(new java.awt.Color(102, 102, 102));
+        txtISBN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtISBNActionPerformed(evt);
+            }
+        });
 
         jLabel10.setText("<html>ISBN/<br>ISSN:\n");
 
@@ -784,71 +822,85 @@ public class FormEmprestimos extends javax.swing.JFrame {
         txtDisponibilidade.setEnabled(false);
         txtDisponibilidade.setOpaque(false);
 
+        jLabel23.setText("Título:");
+
         javax.swing.GroupLayout tabCadastroLayout = new javax.swing.GroupLayout(tabCadastro);
         tabCadastro.setLayout(tabCadastroLayout);
         tabCadastroLayout.setHorizontalGroup(
             tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tabCadastroLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
                 .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tabCadastroLayout.createSequentialGroup()
-                        .addComponent(btnDetalhes)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscarLivrosAdvanced)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton13))
-                    .addGroup(tabCadastroLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscaLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox1))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(tabCadastroLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tabCadastroLayout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtBuscaLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cbOcultarEmprestados))
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createSequentialGroup()
-                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel11)
+                                .addGap(332, 332, 332))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)))
+                        .addComponent(lblImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33))
+                    .addGroup(tabCadastroLayout.createSequentialGroup()
+                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(tabCadastroLayout.createSequentialGroup()
-                                        .addGap(7, 7, 7)
-                                        .addComponent(jLabel7))
-                                    .addComponent(jLabel11))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(tabCadastroLayout.createSequentialGroup()
-                                        .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addContainerGap()
+                                        .addComponent(jLabel7)
+                                        .addGap(29, 29, 29)
+                                        .addComponent(txtBookId, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(12, 12, 12)
                                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtISBN, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(tabCadastroLayout.createSequentialGroup()
-                                        .addComponent(txtBookId, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtTituloSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createSequentialGroup()
-                                    .addComponent(txtDisponibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtAgora, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-                                        .addComponent(txtPrazoEntrega)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtISBN, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addGap(159, 159, 159))
-                                    .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(tabCadastroLayout.createSequentialGroup()
-                                            .addGap(8, 8, 8)
-                                            .addComponent(jLabel8))
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(brnAddLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(tabCadastroLayout.createSequentialGroup()
+                                                .addGap(13, 13, 13)
+                                                .addComponent(jLabel8)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jLabel6))
+                                            .addGroup(tabCadastroLayout.createSequentialGroup()
+                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jLabel4)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtPrazoEntrega)
+                                            .addComponent(txtAgora, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))))
+                                .addGroup(tabCadastroLayout.createSequentialGroup()
+                                    .addComponent(btnDetalhes)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnBuscarLivrosAdvanced)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jButton5)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jButton13)))
+                            .addGroup(tabCadastroLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(tabCadastroLayout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addComponent(txtDisponibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel23))
+                                .addGap(15, 15, 15)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                                    .addComponent(txtTituloSelect))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(brnAddLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tabCadastroLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
@@ -875,17 +927,12 @@ public class FormEmprestimos extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtEmprestimosRestantes, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(tabCadastroLayout.createSequentialGroup()
-                        .addComponent(btnExcluir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(27, 27, 27)
+                        .addComponent(btnNovo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveBook))
-                    .addGroup(tabCadastroLayout.createSequentialGroup()
-                        .addComponent(btnImprimir)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnNovo))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel18)
@@ -922,63 +969,59 @@ public class FormEmprestimos extends javax.swing.JFrame {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRemoveBook))
-                        .addGap(18, 18, 18)
-                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnImprimir)
-                            .addComponent(btnEditar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRemoveBook, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnNovo))
-                        .addGap(187, 187, 187))
+                        .addGap(238, 238, 238))
                     .addGroup(tabCadastroLayout.createSequentialGroup()
-                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(tabCadastroLayout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel5)
-                                .addComponent(txtBuscaLivro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jCheckBox1)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnDetalhes)
-                            .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton13)
-                                .addComponent(jButton5)
-                                .addComponent(btnBuscarLivrosAdvanced)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(brnAddLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(txtBuscaLivro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbOcultarEmprestados))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(tabCadastroLayout.createSequentialGroup()
                                 .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtBookId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel7)
-                                    .addComponent(txtTituloSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel11))
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtISBN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(btnDetalhes)
+                                    .addComponent(btnBuscarLivrosAdvanced)
+                                    .addComponent(jButton5)
+                                    .addComponent(jButton13))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtTituloSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel23)))
+                            .addComponent(brnAddLivro))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(tabCadastroLayout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(8, 8, 8)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel11)
+                                    .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtBookId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel7))
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtISBN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel6)
-                                    .addComponent(txtAgora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(txtPrazoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtDisponibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(lblImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addGroup(tabCadastroLayout.createSequentialGroup()
+                                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel6)
+                                            .addComponent(txtAgora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(txtPrazoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel4))))))
+                        .addGap(226, 226, 226)
+                        .addComponent(txtDisponibilidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         wdwEmprestimos.addTab("Cadastro de Empréstimo", tabCadastro);
@@ -993,7 +1036,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, true, false, true, true, true, true, true, true
+                false, false, false, false, false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1015,10 +1058,13 @@ public class FormEmprestimos extends javax.swing.JFrame {
         });
 
         btnReemprestar.setText("reeemprestar");
+        btnReemprestar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReemprestarActionPerformed(evt);
+            }
+        });
 
         jButton9.setText("Localização");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnImprimeMulta.setText("Imprime Multa");
         btnImprimeMulta.addActionListener(new java.awt.event.ActionListener() {
@@ -1041,6 +1087,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
         txtLivroEmprestado.setEditable(false);
 
         txtFuncionarioQueEmprestou.setEditable(false);
+        txtFuncionarioQueEmprestou.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
 
         txtDataEmprestimo.setEditable(false);
 
@@ -1070,7 +1117,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
 
         jLabel22.setText("Observações:");
 
-        jRadioButton1.setText("Add Observações como permanente  para o Livro");
+        radbtnAddObs.setText("Add Observações como permanente  para o Livro");
 
         radioLista.setText("Mostrar Devolvidos");
         radioLista.addItemListener(new java.awt.event.ItemListener() {
@@ -1084,9 +1131,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1094,16 +1138,18 @@ public class FormEmprestimos extends javax.swing.JFrame {
                                 .addGap(37, 37, 37)
                                 .addComponent(jLabel12))
                             .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(txtIdEmprest)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtIdEmprest, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtLeitorresponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtLivroEmprestado, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(txtLeitorresponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(txtLivroEmprestado, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(246, 246, 246))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -1119,46 +1165,46 @@ public class FormEmprestimos extends javax.swing.JFrame {
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                         .addGap(12, 12, 12)
                                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(StatusEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtDataParaDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                            .addComponent(txtDataParaDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(StatusEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel17)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtDataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtFuncionarioQueEmprestou, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel22)
-                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtFuncionarioQueEmprestou, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(radbtnAddObs, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnReemprestar, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnImprimeMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnDesbloqueiaUsuario)))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(231, 231, 231)))
+                .addComponent(jButton9))
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnReemprestar, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(54, 54, 54)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnImprimeMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnDesbloqueiaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31)
-                                .addComponent(jButton9)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(833, 833, 833)
+                        .addComponent(radioLista))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jRadioButton1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(radioLista)
-                .addGap(16, 16, 16))
+                        .addContainerGap()
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 993, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1173,56 +1219,51 @@ public class FormEmprestimos extends javax.swing.JFrame {
                     .addComponent(txtLeitorresponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(jLabel13))
+                .addGap(2, 2, 2)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
+                        .addGap(13, 13, 13)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel15)
                             .addComponent(txtLivroEmprestado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 18, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                        .addGap(61, 61, 61)
-                                        .addComponent(jScrollPane7))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                        .addGap(38, 38, 38)
-                                        .addComponent(jRadioButton1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(btnImprimeMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(btnDesbloqueiaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnReemprestar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                                .addComponent(jLabel22))
+                                .addComponent(radbtnAddObs)
+                                .addGap(3, 3, 3)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnImprimeMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnDesbloqueiaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnReemprestar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(52, Short.MAX_VALUE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel16)
-                                    .addComponent(txtFuncionarioQueEmprestou, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel17)
-                                    .addComponent(txtDataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
+                                    .addComponent(txtDataEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtFuncionarioQueEmprestou, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel19)
                                     .addComponent(txtDataParaDevolucao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel19))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel20)
-                                    .addComponent(StatusEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel21)
-                                    .addComponent(txtMulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap())))
+                                    .addComponent(jLabel22))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel20)
+                                            .addComponent(StatusEmprestimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(23, 23, 23)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel21)
+                                            .addComponent(txtMulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(35, 35, 35))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton9))
+                        .addComponent(jButton9)
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
 
@@ -1235,14 +1276,16 @@ public class FormEmprestimos extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(wdwEmprestimos)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(wdwEmprestimos, javax.swing.GroupLayout.PREFERRED_SIZE, 1037, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(wdwEmprestimos, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(wdwEmprestimos, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1250,102 +1293,80 @@ public class FormEmprestimos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        int bookId;
-        // se tem 2 na lista nao avisa que ja foi emprestado
+        Utilitarios util = new Utilitarios();
+//______________________pega id de usuario . verifica se esta selecionado___________________________________
         try {
-            EmprestimoDao userE = new EmprestimoDao();
-            EmprestimoDao us = new EmprestimoDao();
-            Livro lvr = new Livro();
-            LivroDao livro = new LivroDao();
-            Usuario uso = new Usuario();
-            String uservide = txtId.getText(); //id string
-            int useridE;
+            int useridint;//
             try {
-                useridE = Integer.parseInt(uservide);//id int
+                useridint = Integer.parseInt(txtId.getText());//id int
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Erro! Selecione um Usuário");
                 wdwEmprestimos.setSelectedIndex(0);
                 return;
             }
-            int limiteE = Integer.parseInt(userE.getUserData("emprestmax", useridE));//
-            System.out.println("useridE=" + useridE);
-            int emprestadosE = Integer.parseInt(userE.getUserData("qtd_emprestimos", useridE));
-            int restantesE = limiteE - emprestadosE;
-            String sE = String.valueOf(restantesE);
-            txtEmprestimosRestantes.setText(sE);//_____________________restantes combobox
-            if (restantesE > 0) {
-                while (tabelaEmprestimos.getRowCount() > 0) {
-                    try {
-                        if (tabelaEmprestimos != null && tabelaEmprestimos.getRowCount() > 0) {//seleciona primeira linha
-                            tabelaEmprestimos.getSelectionModel().setSelectionInterval(0, 0);
-                        }
-                        DefaultTableModel modelo = (DefaultTableModel) tabelaEmprestimos.getModel();
-                        int row = tabelaEmprestimos.getSelectedRow();
-                        lvr.setId(Integer.parseInt((String) modelo.getValueAt(row, 4)));
-                        int idDoLivro = lvr.getId();//us.getEmprestimoFKeyData("tb_livros_id", idDoEmpretstimo);// int id do livro
-                        String seLivroEmprestado = livro.getLivroData("is_emprestado", idDoLivro);
-                        System.out.println("idDoLivro-" + idDoLivro + "/lvr.getId()-" + lvr.getId() + "/seLivroEmprestado-" + seLivroEmprestado);
-                        if (seLivroEmprestado.equals("0")) {//_________________is emprestado?
-                            Emprestimo emp = new Emprestimo();
-                            int useridI = Integer.parseInt(txtId.getText());
-                            int limiteI = Integer.parseInt(us.getUserData("emprestmax", useridI));
-                            int emprestadosI = Integer.parseInt(us.getUserData("qtd_emprestimos", useridI));
-                            int restantesI = limiteI - emprestadosI;
-                            String sI = String.valueOf(restantesI);
-                            txtEmprestimosRestantes.setText(sI);//_____________________________________alera campo emprestados
-                            Timestamp tmsp = new Timestamp(System.currentTimeMillis());//tempo agora
-                            lvr.setId(Integer.parseInt((String) modelo.getValueAt(row, 4)));
-                            bookId = lvr.getId(); // var. ja inicialzada
-                            String disponibilidadePre = livro.getLivroData("disponibilidade", bookId);
-                            int disponibilidade = Integer.parseInt(disponibilidadePre);
-                            Timestamp prazoEntrega = us.addDays(tmsp, disponibilidade);
-                            emp.setData_emprestimo(tmsp);//1  //trocar e implemtar horario de fechamento da biblioteca
-                            txtPrazoEntrega.setText(String.valueOf(prazoEntrega)); //cast to cal
-                            emp.setData_entrega_agendada(prazoEntrega);//2
-                            emp.setObservacoes(modelo.getValueAt(row, 3).toString());//3
-                            emp.setTb_livros_id(lvr);//4
-                            String contentid;
-                            contentid = new String(Files.readAllBytes(Paths.get("C:\\GoldenOwl\\LoggedIn")));
-                            Funcionario fnc = new Funcionario();
-                            fnc.setId(Integer.parseInt(contentid));
-                            emp.setTb_funcionarios_id(fnc);//5 //set funcionario id
-                            uso.setId(useridI);
-                            emp.setTb_leitores_id(uso);//6
-                            EmprestimoDao empD = new EmprestimoDao();
-                            empD.cadastrarEmprestimo(emp);// passar variavel default
-                            System.out.println("useridI===" + useridI);
-                            livro.setIsEmprestado(idDoLivro);//7 ////////____*******
-                            int somaemprestado = emprestadosI + 1;//8   
-                            us.SomaEmprestimo(somaemprestado, useridI);
-                            caixa.removeRow(0);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Livro já foi Emprestado, verifique!");
-                            break;
-                        }
-                    } catch (IOException ex) {
-                        Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                int emprestados2 = Integer.parseInt(userE.getUserData("qtd_emprestimos", useridE));//altera campo  restantes no final do processo
-                int restantes2 = limiteE - emprestados2;
-                String s2 = String.valueOf(restantes2);
-                txtEmprestimosRestantes.setText(s2);
-            } else {
+//______________________caso user nao tenha emprestimos restantes__________________________________          
+            EmprestimoDao emprestimoDao = new EmprestimoDao();
+            if ((emprestimoDao.calculaemprestimosrestantes(useridint)) == 0) {
                 JOptionPane.showMessageDialog(null, "Limite de empréstimos excedido, precisa devolver Livros antes de emprestar outros!");
+                util.limpaTela(tabCadastro);
+                while (caixa.getRowCount() > 0) {
+                    caixa.removeRow(0);
+                }
+                return;
             }
+//______________________ seleciona primeira linha - pega id do livro na 5a coluna ___________________________________           
+            while (tabelaEmprestimos.getRowCount() > 0) {
+                try {
+                    if (tabelaEmprestimos != null && tabelaEmprestimos.getRowCount() > 0) {
+                        tabelaEmprestimos.getSelectionModel().setSelectionInterval(0, 0);
+                    }
+                    DefaultTableModel modelo = (DefaultTableModel) tabelaEmprestimos.getModel();
+                    int row = tabelaEmprestimos.getSelectedRow();
+                    Livro livro = new Livro();
+                    livro.setId(Integer.parseInt((String) modelo.getValueAt(row, 4)));
+                    int livroidint = livro.getId();
+//________________________  livro está emprestado? se estiver cancela  operacao_____________________________________                  
+                    LivroDao livrodao = new LivroDao();
+                    String seLivroEmprestado = livrodao.getLivroData("is_emprestado", livroidint);
+                    if (!seLivroEmprestado.equals("0")) {
+                        JOptionPane.showMessageDialog(null, "Livro já foi Emprestado, verifique!");
+                        caixa.removeRow(0);
+                        break;
+                    }
+//_____________________________________pega disponibilidade para caulcular prazos_ constroi objeto___________________________________
+                    Emprestimo emprestimo = new Emprestimo();
+                    Timestamp tmsp = new Timestamp(System.currentTimeMillis());//tempo agora
+                    Timestamp prazoEntrega = emprestimoDao.addDays(tmsp, Integer.parseInt(livrodao.getLivroData("disponibilidade", livro.getId())));
+                    emprestimo.setData_emprestimo(tmsp);//1  //trocar e implemtar horario de fechamento da biblioteca
+                    emprestimo.setData_entrega_agendada(prazoEntrega);//2
+                    emprestimo.setObservacoes(modelo.getValueAt(row, 3).toString());//3
+                    emprestimo.setTb_livros_id(livro);//4
+
+                    Funcionario funcionario = new Funcionario();
+                    String contentid = new String(Files.readAllBytes(Paths.get("C:\\GoldenOwl\\LoggedIn")));
+                    funcionario.setId(Integer.parseInt(contentid));
+                    emprestimo.setTb_funcionarios_id(funcionario);//5 //set funcionario id
+
+                    Usuario usuario = new Usuario();//parse com variaveis tipo usuario
+                    usuario.setId(useridint);
+                    emprestimo.setTb_leitores_id(usuario);//6 //pega direto
+//_____________________________cadastra objeto __________________________
+                    EmprestimoDao obj = new EmprestimoDao();
+                    obj.cadastrarEmprestimo(emprestimo);// passar variavel default
+                    livrodao.setIsEmprestado(livroidint);//7
+//________________________ update campo emprestimos restantes e add ao contador do usuario no db ___________________________
+                    int livrosemprestados = Integer.parseInt(emprestimoDao.getUserData("qtd_emprestimos", useridint));//8   
+                    emprestimoDao.SomaEmprestimo(livrosemprestados, useridint);
+                    caixa.removeRow(0);
+                } catch (IOException ex) {
+                    Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            txtEmprestimosRestantes.setText(String.valueOf(emprestimoDao.calculaemprestimosrestantes(useridint)));
         } catch (Exception ex) {
             Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
-
-    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // TODO add your handling code here:
-//        Funcionario obj = new Funcionario();
-//        obj.setId(Integer.valueOf(txtId.getText()));
-//        FuncionarioDao dao = new FuncionarioDao();
-//        dao.checkIdFuncionarioExist(obj);
-
-    }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void txtPesquisaUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisaUsuarioActionPerformed
         // TODO add your handling code here:
@@ -1377,23 +1398,16 @@ public class FormEmprestimos extends javax.swing.JFrame {
 
     }//GEN-LAST:event_formWindowActivated
 
-    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        //editar
-    }//GEN-LAST:event_btnEditarActionPerformed
-
-    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        // excluir
-//        Funcionario obj = new Funcionario();
-//        obj.setId(Integer.valueOf(txtId.getText()));
-//        FuncionarioDao dao = new FuncionarioDao();
-//        dao.excluirFuncionario(obj);
-
-    }//GEN-LAST:event_btnExcluirActionPerformed
-
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        // TODO add your handling code here:
-//        Utilitarios util = new Utilitarios();
-//        util.limpaTela(tabCadastro);
+        Utilitarios util = new Utilitarios();
+        util.limpaTela(tabCadastro);
+        while (caixa.getRowCount() > 0) {
+            caixa.removeRow(0);
+        }
+        Date agora = new Date();
+        SimpleDateFormat dataBR = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String dataFormatada = dataBR.format(agora);
+        txtAgora.setText(String.valueOf(dataFormatada));
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPesquisarKeyReleased
@@ -1499,11 +1513,9 @@ public class FormEmprestimos extends javax.swing.JFrame {
     }//GEN-LAST:event_wdwEmprestimosComponentShown
 
     private void btnPesquisar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisar1ActionPerformed
-
     }//GEN-LAST:event_btnPesquisar1ActionPerformed
 
     private void btnPesquisar1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPesquisar1KeyReleased
-        // TODO add your handling code here:
 
     }//GEN-LAST:event_btnPesquisar1KeyReleased
 
@@ -1512,7 +1524,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPesquisaLivrosActionPerformed
 
     private void txtPesquisaLivrosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaLivrosKeyReleased
-        // TODO add your handling code here:
         String nome = "%" + txtPesquisaLivros.getText() + "%";
         LivroDao dao = null;
         try {
@@ -1550,24 +1561,30 @@ public class FormEmprestimos extends javax.swing.JFrame {
     }//GEN-LAST:event_wdwEmprestimosMouseClicked
 
     private void tabelaLivrosFiltroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaLivrosFiltroMouseClicked
-        DefaultTableModel model = (DefaultTableModel) tabelaLivros.getModel();
-        int selectedRowIndex = tabelaLivrosFiltro.getSelectedRow();
-        txtBookId.setText(model.getValueAt(selectedRowIndex, 0).toString());
-        txtTituloSelect.setText(model.getValueAt(selectedRowIndex, 1).toString());
-        txtISBN.setText(model.getValueAt(selectedRowIndex, 4).toString());
-        txtObservacoes.setText(model.getValueAt(selectedRowIndex, 15).toString());
-        txtDisponibilidade.setText(model.getValueAt(selectedRowIndex, 14).toString());
-        String path = "C:\\goldenOwl\\images\\books\\" + txtISBN.getText();
-        lblImagem.setIcon(ResizeBookImage(path));
-        Date dataTeste = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dataTeste);
-        cal.add(Calendar.DATE, (int) model.getValueAt(selectedRowIndex, 14)); //////////disponibilidade
-        dataTeste = cal.getTime();
-        SimpleDateFormat dataBR = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-//trocar e implemtar horario de fechamento da biblioteca
-        String dataFormatada = dataBR.format(dataTeste);
-        txtPrazoEntrega.setText(String.valueOf(dataFormatada));
+        try {
+            DefaultTableModel model = (DefaultTableModel) tabelaLivros.getModel();
+            int selectedRowIndex = tabelaLivrosFiltro.getSelectedRow();
+            txtBookId.setText(model.getValueAt(selectedRowIndex, 0).toString());
+            txtTituloSelect.setText(model.getValueAt(selectedRowIndex, 1).toString());
+            txtISBN.setText(model.getValueAt(selectedRowIndex, 4).toString());
+            txtObservacoes.setText(model.getValueAt(selectedRowIndex, 15).toString());
+            txtDisponibilidade.setText(model.getValueAt(selectedRowIndex, 14).toString());
+            String path = "C:\\goldenOwl\\images\\books\\" + txtISBN.getText();
+            lblImagem.setIcon(ResizeBookImage(path));
+            EmprestimoDao emprestimodao = new EmprestimoDao();
+            txtStatus.setText(emprestimodao.campoStatusLista(Integer.parseInt(txtBookId.getText())));
+            Date dataTeste = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(dataTeste);
+            cal.add(Calendar.DATE, (int) model.getValueAt(selectedRowIndex, 14)); //////////disponibilidade
+            dataTeste = cal.getTime();
+            SimpleDateFormat dataBR = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            //trocar e implemtar horario de fechamento da biblioteca
+            String dataFormatada = dataBR.format(dataTeste);
+            txtPrazoEntrega.setText(String.valueOf(dataFormatada));
+        } catch (Exception ex) {
+            Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_tabelaLivrosFiltroMouseClicked
 
     // filtrar busca na aba  cadastro de emprestimos
@@ -1590,8 +1607,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscaLivroKeyReleased
 
     //botao add to emprtestimo
-    // add funcao para limapr campos no final
-    // nao add se ja existe
     // pega emprestimo restantes e qtdade de linhas da jtable para inserrir apenas limite de emprestimos junto com numero de licros na mao do usuario (ou se numero de emprestimos restantes == 0
     private void brnAddLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brnAddLivroActionPerformed
         String nome = txtTituloSelect.getText();
@@ -1655,8 +1670,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
         detalhesLivro.pack();
         detalhesLivro.setLocationRelativeTo(null);
         detalhesLivro.setVisible(true);
-
-
     }//GEN-LAST:event_btnDetalhesActionPerformed
 
     private void btnBuscaUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscaUserActionPerformed
@@ -1743,7 +1756,11 @@ public class FormEmprestimos extends javax.swing.JFrame {
                 } else {
                     int EmpresId = Integer.parseInt(txtIdEmprest.getText());
                     devEmpres.devolveLivro(EmpresId);
-                    // limpa campos
+                     if (radbtnAddObs.isSelected()) {
+                         int livroid = devEmpres.getEmprestimoFKeyData("tb_livros_id", Integer.parseInt(txtIdEmprest.getText()));
+                         LivroDao  livro = new LivroDao();
+                         livro.addObservacoes(txtObservacoesDevolucao.getText(), livroid);
+                     }
                     txtIdEmprest.setText("");
                     txtLeitorresponsavel.setText("");
                     txtLivroEmprestado.setText("");
@@ -1754,6 +1771,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
                     txtObservacoesDevolucao.selectAll();
                     txtMulta.setText("");
                     txtObservacoesDevolucao.replaceSelection("");
+                    //pegar id do user e atualizar emprestimos restantes ou limpar campo user
                 }
             } catch (Exception ex) {
                 Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
@@ -1820,10 +1838,10 @@ public class FormEmprestimos extends javax.swing.JFrame {
             multa.setTb_leitores_id(user.pegaUserIdpeloNome(txtLeitorresponsavel.getText()));
 
             MultaDao multaDao = new MultaDao();
-            System.out.println("iddo emprestimo para comparar" +Integer.parseInt(txtIdEmprest.getText()));
+            System.out.println("iddo emprestimo para comparar" + Integer.parseInt(txtIdEmprest.getText()));
             if (multaDao.seJaExiste((Integer.parseInt(txtIdEmprest.getText()))) == false) {
                 multaDao.cadastrarMulta(multa);
-            } 
+            }
             int msgEmpId = multa.getTb_emprestimos_id();
             FormMulta formulta = new FormMulta(msgEmpId);
             formulta.pack();
@@ -1833,6 +1851,80 @@ public class FormEmprestimos extends javax.swing.JFrame {
             Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnImprimeMultaActionPerformed
+
+    private void txtTituloSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTituloSelectActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTituloSelectActionPerformed
+
+    private void txtISBNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtISBNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtISBNActionPerformed
+
+    private void txtPrazoEntregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrazoEntregaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrazoEntregaActionPerformed
+
+    private void cbOcultarEmprestadosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbOcultarEmprestadosItemStateChanged
+        if (!cbOcultarEmprestados.isSelected()) {
+            try {
+                listarLivrosFiltro();
+            } catch (Exception ex) {
+                Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                listarLivrosFiltroCompact(); //compact
+            } catch (Exception ex) {
+                Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_cbOcultarEmprestadosItemStateChanged
+
+    private void btnReemprestarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReemprestarActionPerformed
+        try {
+            String se_devolvido = StatusEmprestimo.getText();
+            if (se_devolvido.equals("Devolvido")) {
+                JOptionPane.showMessageDialog(null, " Livro já foi devolvido");
+            } else {
+                EmprestimoDao devEmpres = new EmprestimoDao();
+                if (txtIdEmprest.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Selecione um Emprestimo antes de prosseguir");
+                } else {
+                    //dialogo paca confirmar se o livro foi inspecionado
+                    //nao esta marcando is emprestado em livro
+                    Emprestimo obj = new Emprestimo();
+                    LivroDao livrodao = new LivroDao();
+                    EmprestimoDao emprestimodao = new EmprestimoDao();
+                    Timestamp now = new Timestamp(System.currentTimeMillis());
+                    int iddoemprestimo = Integer.parseInt(txtIdEmprest.getText());
+                    int disponibilidade = Integer.parseInt(livrodao.getLivroData("disponibilidade", emprestimodao.getEmprestimoFKeyData("tb_livros_id", iddoemprestimo)));
+                    Timestamp newdata = emprestimodao.addDays(now, disponibilidade);
+                    obj.setData_emprestimo(now);
+                    obj.setData_entrega_agendada(newdata);
+                    obj.setObservacoes(txtObservacoesDevolucao.getText());
+                    Funcionario funcionario = new Funcionario();
+                    String contentid = new String(Files.readAllBytes(Paths.get("C:\\GoldenOwl\\LoggedIn")));
+                    funcionario.setId(Integer.parseInt(contentid));
+                    obj.setTb_funcionarios_id(funcionario);
+                    Usuario usuario = new Usuario();
+                    usuario.setId(emprestimodao.getEmprestimoFKeyData("tb_leitores_id", iddoemprestimo));
+                    obj.setTb_leitores_id(usuario);
+                    Livro livro = new Livro();
+                    int livroid = emprestimodao.getEmprestimoFKeyData("tb_livros_id", iddoemprestimo);
+                    livro.setId(livroid);
+                    obj.setTb_livros_id(livro);
+                    devEmpres.devolveLivro(iddoemprestimo);
+
+                    livrodao.setIsEmprestado(livroid);
+                    int livrosemprestados = Integer.parseInt(emprestimodao.getUserData("qtd_emprestimos", usuario.getId()));//8   
+                    emprestimodao.SomaEmprestimo(livrosemprestados, usuario.getId());
+                    emprestimodao.cadastrarEmprestimo(obj);
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(FormEmprestimos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnReemprestarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1893,22 +1985,18 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private javax.swing.JButton btnDesbloqueiaUsuario;
     private javax.swing.JButton btnDetalhes;
     private javax.swing.JButton btnDevolver;
-    private javax.swing.JButton btnEditar;
-    private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnImprimeMulta;
-    private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnPesquisar;
     private javax.swing.JButton btnPesquisar1;
     private javax.swing.JButton btnReemprestar;
     private javax.swing.JButton btnRemoveBook;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JCheckBox cbOcultarEmprestados;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton9;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1924,6 +2012,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1934,7 +2023,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1944,6 +2032,7 @@ public class FormEmprestimos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JLabel lblImagem;
     private javax.swing.JLabel lblimagemUser;
+    private javax.swing.JRadioButton radbtnAddObs;
     private javax.swing.JRadioButton radioLista;
     private javax.swing.JPanel tabCadastro;
     private javax.swing.JPanel tabConsultaUsuarios;

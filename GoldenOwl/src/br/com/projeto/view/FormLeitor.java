@@ -241,9 +241,9 @@ public class FormLeitor extends javax.swing.JFrame {
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtPesquisaUsuario)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnPesquisar)
-                        .addGap(618, 618, 618))))
+                        .addGap(220, 220, 220))))
         );
         tabConsultaUsuariosLayout.setVerticalGroup(
             tabConsultaUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,7 +255,7 @@ public class FormLeitor extends javax.swing.JFrame {
                     .addComponent(btnPesquisar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         tabbedFrame.addTab("Consulta de Usuários", tabConsultaUsuarios);
@@ -327,21 +327,6 @@ public class FormLeitor extends javax.swing.JFrame {
 
         boxUf.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
 
-        ViaCEP viacep = new ViaCEP();
-        txtEndereco.setText("Aguarde...");
-        if (jTxtCep.getText().length() == 9)
-        {
-            try {
-                viacep.buscar(txtCep.getText());
-                txtBairro.setText(viacep.getBairro());
-                txtCidade.setText(viacep.getLocalidade());
-                txtEndereco.setText(viacep.getLogradouro());
-                boxUf.setSelectedItem(viacep.getUf());
-            }catch {
-
-            }
-        }
-
         try {
             txtCep.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("#####-###")));
         } catch (java.text.ParseException ex) {
@@ -405,8 +390,11 @@ public class FormLeitor extends javax.swing.JFrame {
             }
         });
 
+        boxTipo.setSelectedItem(boxTipo);
         boxTipo.setBorder(new javax.swing.border.MatteBorder(null));
+        boxTipo.setDebugGraphicsOptions(javax.swing.DebugGraphics.BUFFERED_OPTION);
         boxTipo.setDoubleBuffered(true);
+        boxTipo.setLightWeightPopupEnabled(false);
         boxTipo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 boxTipoMouseClicked(evt);
@@ -479,38 +467,35 @@ public class FormLeitor extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jLabel18))
                             .addGroup(tabCadastroLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel20)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(boxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(tabCadastroLayout.createSequentialGroup()
                                 .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnFoto)
+                                    .addComponent(lblImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(11, 11, 11)
+                                .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12)
                                     .addGroup(tabCadastroLayout.createSequentialGroup()
                                         .addGap(6, 6, 6)
-                                        .addComponent(jLabel20)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(boxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel11))
                                     .addGroup(tabCadastroLayout.createSequentialGroup()
-                                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnFoto)
-                                            .addComponent(lblImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(11, 11, 11)
-                                        .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel12)
-                                            .addGroup(tabCadastroLayout.createSequentialGroup()
-                                                .addGap(6, 6, 6)
-                                                .addComponent(jLabel11))
-                                            .addGroup(tabCadastroLayout.createSequentialGroup()
-                                                .addComponent(jLabel9)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabCadastroLayout.createSequentialGroup()
-                                                    .addComponent(jLabel10)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(txtCpf))
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(txtRg, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabCadastroLayout.createSequentialGroup()
-                                                        .addGap(56, 56, 56)
-                                                        .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                            .addComponent(btnImprimir))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabCadastroLayout.createSequentialGroup()
+                                            .addComponent(jLabel10)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(txtCpf))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(txtRg, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabCadastroLayout.createSequentialGroup()
+                                                .addGap(56, 56, 56)
+                                                .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(btnImprimir))))
                         .addGap(2, 2, 2)
                         .addGroup(tabCadastroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabCadastroLayout.createSequentialGroup()
@@ -702,7 +687,7 @@ public class FormLeitor extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabbedFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tabbedFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNovo1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
@@ -815,7 +800,17 @@ public class FormLeitor extends javax.swing.JFrame {
         txtSerie.setText(model.getValueAt(selectedRowIndex, 15).toString());
         txtMaxEmprestimos.setText(model.getValueAt(selectedRowIndex, 16).toString());
         txtObservacoes.setText(model.getValueAt(selectedRowIndex, 17).toString());
-        boxTipo.addItem((String) model.getValueAt(selectedRowIndex, 18));
+        
+        OptionsDao dao = new OptionsDao();
+        List<Options> ListaOptions = dao.listarTipos_de_usuarios();
+        boxTipo.removeAllItems();
+        for (Options f : ListaOptions) {
+            boxTipo.addItem(f.getTipos_de_usuarios());
+        }
+        boxTipo.setSelectedItem(model.getValueAt(selectedRowIndex, 18));
+        
+        
+        //boxTipo.addItem((String) model.getValueAt(selectedRowIndex, 18));
         String path = "C:\\goldenOwl\\images\\usuarios\\" + txtId.getText();
         lblImagem.setIcon(ResizeBookImage(path));
     }//GEN-LAST:event_tabelaUsuarioMouseClicked
@@ -823,6 +818,7 @@ public class FormLeitor extends javax.swing.JFrame {
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
         Utilitarios util = new Utilitarios();
         util.limpaTela(tabCadastro);
+        txtObservacoes.setText(null);
         lblImagem.setIcon(null);
     }//GEN-LAST:event_btnNovoActionPerformed
 
@@ -938,12 +934,14 @@ public class FormLeitor extends javax.swing.JFrame {
     
     
     private void boxTipoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxTipoMouseClicked
+        String boxTipoString = (String) boxTipo.getSelectedItem();
+        boxTipo.removeAllItems();
         OptionsDao dao = new OptionsDao();
         List<Options> ListaOptions = dao.listarTipos_de_usuarios();
-        boxTipo.removeAllItems();
         for (Options f : ListaOptions) {
-            boxTipo.addItem(f.getTipos_de_usuarios());
+            boxTipo.insertItemAt(f.getTipos_de_usuarios(), boxTipo.getItemCount());
         }
+        boxTipo.setSelectedItem(boxTipoString);
     }//GEN-LAST:event_boxTipoMouseClicked
 
     private void btnNovo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovo1ActionPerformed

@@ -26,14 +26,11 @@ public class Utilitarios {
     public void limpaTela(JPanel container) {
         Component components[] = container.getComponents();
         for (Component component : components) {
-            if (component instanceof JTextField) {
+            if (component instanceof JTextField || component instanceof JTextArea) {
                 ((JTextField) component).setText(null);
             }
-            if (component instanceof JTextArea) {
-                ((JTextArea) component).setText(null);
-            }
             if (component instanceof JComboBox) {
-                ((JComboBox) component).setSelectedIndex(0);
+                ((JComboBox) component).setSelectedIndex(-1);
             }
              if (component instanceof JLabel) {
                 ((JLabel) component).setIcon(null);

@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -84,7 +85,7 @@ public class EmprestimoDao {
     public void SomaEmprestimo(int value, int id) throws SQLException {
         String sql = "update tb_leitores set qtd_emprestimos = ?  where id = ? ";
         java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);
-        stmt.setInt(1, value);
+        stmt.setInt(1, value + 1);
         stmt.setInt(2, id);
         stmt.execute();
         stmt.close();
@@ -192,7 +193,7 @@ public class EmprestimoDao {
     public Timestamp addDays(Timestamp date, int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.DATE, days); 
+        cal.add(Calendar.DATE, days);
         return new Timestamp(cal.getTime().getTime());
     }
 
@@ -219,12 +220,30 @@ public class EmprestimoDao {
         return (taxa / 100) * dias;
     }
 
+    public void reemsprestaLivro(String disponibilidade, int iddoemprestimo) throws SQLException {
+        String sql = "update tb_emprestimos set data_entrega_agendada = ? where id = " + iddoemprestimo;
+        java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);
+        
+       //get livro idponibilidade
+        
+        Timestamp now = new Timestamp(System.currentTimeMillis());//tempo agora
+         Timestamp newdata = this.addDays(now, Integer.parseInt(disponibilidade));
+        stmt.setString (1, String.valueOf(newdata));
+//        long _timeGap = now.getTime() - dataentregaagendada.getTime();
+//            long tempo = _timeGap / 1000 / 60 / 60 / 24;
+//            Long l = new Long(tempo);
+//            i = l.intValue();
+
+        stmt.execute();
+        stmt.close();
+    }
+
     public void devolveLivro(int emprestimoId) throws SQLException, IOException {// não passa como objeto pois saida dos campos teve pós-formatação dos dados
-            //esta sobreescrevendo nome de funcionario pelo numero precisa gravar tb_funcionarios_iddevol
-            //implemet limpa tela
+        //esta sobreescrevendo nome de funcionario pelo numero precisa gravar tb_funcionarios_iddevol
+        //implemet limpa tela
         String sql = "update tb_emprestimos as e "
                 + " INNER JOIN tb_leitores AS u ON (e.tb_leitores_id = u.id) "
-               // + " INNER JOIN tb_funcionarios AS f ON(e.tb_funcionarios_id = f.id) "
+                // + " INNER JOIN tb_funcionarios AS f ON(e.tb_funcionarios_id = f.id) "
                 + " INNER JOIN tb_livros AS l ON(e.tb_livros_id = l.id) "
                 + " set e.data_devolucao = ?, e.tb_funcionarios_iddevol = ?,  l.is_emprestado = ? "
                 + " where e.id = ? ";
@@ -238,13 +257,13 @@ public class EmprestimoDao {
         stmt.setString(1, now);
         stmt.setInt(2, fnc.getId());
         stmt.setInt(3, 0);
-        
+
         int leitorId = this.getEmprestimoFKeyData("tb_leitores_id", emprestimoId);//pega o id do usor
         int qtdEmprestimos = Integer.parseInt(this.getUserData("qtd_emprestimos", leitorId));//pega qtd emrpestimos
-        int valorsubtraido = qtdEmprestimos -1;
+        int valorsubtraido = qtdEmprestimos - 1;
         this.DiminuiEmprestimo(valorsubtraido, leitorId);//coloca o valor subtraido valor no db
         stmt.setInt(4, emprestimoId);
-System.out.println("now =" + now + "/ valorsubtraido=" + valorsubtraido + "/ contentid=" + contentid);
+        System.out.println("now =" + now + "/ valorsubtraido=" + valorsubtraido + "/ contentid=" + contentid);
         stmt.execute();
         stmt.close();
         if (contentid != null) {
@@ -277,7 +296,6 @@ System.out.println("now =" + now + "/ valorsubtraido=" + valorsubtraido + "/ con
     }
 
     public String campoStatus(Timestamp data_devolucao, int atraso) {
-        System.out.println("data_devolucao:  " + data_devolucao);
         if (atraso > 0) {
             String d = String.valueOf(atraso) + " dias de atraso";
             return d;
@@ -324,4 +342,83 @@ System.out.println("now =" + now + "/ valorsubtraido=" + valorsubtraido + "/ con
         return value;
     }
 
+    public int calculaemprestimosrestantes(int userid) throws SQLException {
+        int emprestimosrestantes = 0;
+        String sql = "select * from tb_leitores where id = " + userid; // substituir por ? e stmt.setInt(1,data dá erro, ver o pq
+        try (java.sql.PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                int limitedeemprestimos = Integer.parseInt(rs.getString("emprestmax"));
+                int livrosemprestados = Integer.parseInt(rs.getString("qtd_emprestimos"));
+                emprestimosrestantes = limitedeemprestimos - livrosemprestados;
+            }
+        }
+        return emprestimosrestantes;
+    }
+
+    public Timestamp livroStatusEmprestimo(int idDoLivro) throws SQLException { //pode restoornar varios valores por ex: ja edevolvidos
+        Timestamp ts = null;
+        String value = null;
+        String sql = "select * from tb_emprestimos where tb_livros_id = " + idDoLivro + " and data_devolucao IS NULL"; // substituir por ? e stmt.setInt(1,data dá erro, ver o pq
+        System.out.println("iddolivro=" + idDoLivro);
+        try (java.sql.PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                value = rs.getString("data_entrega_agendada");
+                if (value == null) {
+                    ts = null;
+                } else {
+                    ts = Timestamp.valueOf(value);
+                }
+            }
+        }
+        System.out.println("saida de livroStatusEmprestimo:" + ts);
+        return ts;
+    }
+
+    public String campoStatusLista(int livroid) throws Exception {
+        String d = "";
+        LivroDao livro = new LivroDao();
+        Timestamp dataentregaagendada = this.livroStatusEmprestimo(livroid);
+        String emprestimo = livro.getLivroData("disponibilidade", livroid);
+        String estaemprestado = livro.getLivroData("is_emprestado", livroid);
+        Timestamp now = new Timestamp(System.currentTimeMillis());//tempo agora
+        System.out.println("now= " + now.getTime() + "dataentregaagendada.getTime() = " + dataentregaagendada);
+        int i;
+        String emprestimoFormat = "";
+        if (emprestimo.equals("1")) {
+            //emprestimo /24
+            emprestimoFormat = "1 dia";
+        } else {
+            //emprestimo /24
+            emprestimoFormat = emprestimo + " dias";
+        }
+        if (dataentregaagendada != null) {
+            long _timeGap = now.getTime() - dataentregaagendada.getTime();
+            long tempo = _timeGap / 1000 / 60 / 60 / 24;
+            Long l = new Long(tempo);
+            i = l.intValue();
+            System.out.println("i = diferenca de dias = " + i + "/estaemprestado = " + estaemprestado);
+
+            if (estaemprestado.equals("1") && i <= 0) {
+                d = "emprestado até " + this.displayData(dataentregaagendada) + ". empréstimo é de " + emprestimoFormat;
+            }
+            if (estaemprestado.equals("1") && i > 0) {
+                d = "emprestimo atrasado " + i + " dias ! empréstimo é de até " + emprestimoFormat;
+            }
+        } else {
+            if (!emprestimo.equals("0")) {
+                d = "Disponível para empréstimo de até " + emprestimoFormat;
+            }
+            if (emprestimo.equals("0")) {
+                d = "Volume para leitura nas dependências apenas";
+            }
+
+        }
+
+        {
+            return d;
+        }
+
+    }
 }
