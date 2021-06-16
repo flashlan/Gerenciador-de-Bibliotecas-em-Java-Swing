@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package br.com.projeto.model;
-
 import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableCellRenderer;
 

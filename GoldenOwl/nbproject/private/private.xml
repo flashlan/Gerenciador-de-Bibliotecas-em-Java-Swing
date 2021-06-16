@@ -17,10 +17,27 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/Options.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/QRCodeGenerator.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/dao/LivroDao.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/Livro.java</file>
             <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormLeitor.java</file>
             <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/dao/OptionsDao.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormLogin.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/Biblioteca.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/dao/EmprestimoDao.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormFuncionarios.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormDetalhesLivro.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormEmprestimos.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormFornecedores.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/dao/FornecedorDao.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/Fornecedor.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/DateRenderer.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/dao/FuncionarioDao.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/Emprestimo.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormMenu.java</file>
             <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormLivros.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/model/TesteTabela.java</file>
+            <file>file:/G:/Desktop/Dev/Netbeans/GoldenOwl/src/br/com/projeto/view/FormCartao.java</file>
         </group>
     </open-files>
 </project-private>

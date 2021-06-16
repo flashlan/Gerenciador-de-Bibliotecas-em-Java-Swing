@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -142,8 +141,6 @@ public class TesteTabela {
             if (columnIndex == 0) {
                 return String.class;
             }
-// if (columnIndex==1) return null;
-// if (columnIndex==2) return null;
             return null;
         }
 

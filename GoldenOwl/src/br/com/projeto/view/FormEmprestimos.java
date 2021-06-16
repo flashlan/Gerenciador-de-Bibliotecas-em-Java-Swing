@@ -155,9 +155,6 @@ public class FormEmprestimos extends javax.swing.JFrame {
         }
     }
 
-//    if (data_devolucao != null && atraso == 0) {
-//            String d = "Devolvido";
-//            return d;
     // #################################################################
     //add disponibilidade leitor localizacao e observações
     public void listarLivrosFiltro() throws Exception {

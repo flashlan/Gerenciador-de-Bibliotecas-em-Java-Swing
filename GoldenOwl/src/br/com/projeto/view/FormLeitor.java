@@ -724,7 +724,6 @@ public class FormLeitor extends javax.swing.JFrame {
         obj.setObservacoes(txtObservacoes.getText());
         obj.setTipo((String) boxTipo.getSelectedItem());
         obj.setIs_locked(false); //inicializa is locked como falso (somente em novo usuario)
-        //implementar salvar is_locked e qtd_emprestimos
 
         if (txtNome.getText().isEmpty() || txtCelular.getText().isEmpty() || txtRg.getText().isEmpty() || txtCep.getText().isEmpty() || txtEndereco.getText().isEmpty() || txtMaxEmprestimos.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Campos  com * são de preenchimento obrigatório!");
@@ -800,7 +799,7 @@ public class FormLeitor extends javax.swing.JFrame {
         txtSerie.setText(model.getValueAt(selectedRowIndex, 15).toString());
         txtMaxEmprestimos.setText(model.getValueAt(selectedRowIndex, 16).toString());
         txtObservacoes.setText(model.getValueAt(selectedRowIndex, 17).toString());
-        
+
         OptionsDao dao = new OptionsDao();
         List<Options> ListaOptions = dao.listarTipos_de_usuarios();
         boxTipo.removeAllItems();
@@ -808,8 +807,7 @@ public class FormLeitor extends javax.swing.JFrame {
             boxTipo.addItem(f.getTipos_de_usuarios());
         }
         boxTipo.setSelectedItem(model.getValueAt(selectedRowIndex, 18));
-        
-        
+
         //boxTipo.addItem((String) model.getValueAt(selectedRowIndex, 18));
         String path = "C:\\goldenOwl\\images\\usuarios\\" + txtId.getText();
         lblImagem.setIcon(ResizeBookImage(path));
@@ -894,7 +892,6 @@ public class FormLeitor extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Usuario não encontrado");
         }
-
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
     private void txtRgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRgActionPerformed
@@ -931,8 +928,6 @@ public class FormLeitor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnFotoActionPerformed
 
-    
-    
     private void boxTipoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxTipoMouseClicked
         String boxTipoString = (String) boxTipo.getSelectedItem();
         boxTipo.removeAllItems();
@@ -960,13 +955,12 @@ public class FormLeitor extends javax.swing.JFrame {
             txtCidade.setText(viacep.getLocalidade());
             txtEndereco.setText(viacep.getLogradouro());
             boxUf.setSelectedItem(viacep.getUf());
-                    
+
         } catch (ViaCEPException ex) {
             Logger.getLogger(FormLeitor.class.getName()).log(Level.SEVERE, null, ex);
         }
-{
-        
-    }
+        {
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

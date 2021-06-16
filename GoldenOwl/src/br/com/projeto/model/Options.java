@@ -124,8 +124,6 @@ public class Options {
         this.library_address = library_address;
     }
     
-    
-    
     @Override public String toString( ){ return this.getPiso(); }
     
 }

@@ -404,7 +404,7 @@ public class FormLivros extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Disponibilidade:");
+        jLabel6.setText("*Disponibilidade:");
 
         lblImagem.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblImagem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/book_cover.png"))); // NOI18N
@@ -691,7 +691,6 @@ public class FormLivros extends javax.swing.JFrame {
         obj.setSerie(txtSerie.getText());
         obj.setEdicao(txtEdicao.getText());
         obj.setIdioma(txtIdioma.getText());
-        //do tipo fornecedor
         obj.setFornecedor((Fornecedor) boxFornecedor.getSelectedItem()); //cannot cast string to fornecedores error
         obj.setPiso((String) boxPiso.getSelectedItem());
         obj.setCorredor((String) boxCorredor.getSelectedItem());
@@ -711,7 +710,6 @@ public class FormLivros extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(FormLivros.class.getName()).log(Level.SEVERE, null, ex);
         }
-//
         if (txtTitulo.getText().isEmpty() || txtAutor.getText().isEmpty()
                 || txtIsbn.getText().isEmpty() || txtEditora.getText().isEmpty()
                 || txtIdioma.getText().isEmpty() || boxDisponibilidade.getSelectedItem() == null
@@ -723,6 +721,7 @@ public class FormLivros extends javax.swing.JFrame {
                 try {
                     obj.setId(Integer.valueOf(txtId.getText()));
                     dao.alterarLivro(obj);
+                    System.out.println("fornecedor object: " + obj.getFornecedor().getId());
                 } catch (IOException ex) {
                     Logger.getLogger(FormLivros.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -732,7 +731,7 @@ public class FormLivros extends javax.swing.JFrame {
         }
 
         //dao.cadastrarLivro(obj);
-        new Utilitarios().limpaTela(tabCadastro);
+        //new Utilitarios().limpaTela(tabCadastro);
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void txtPesquisaLivrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisaLivrosActionPerformed
@@ -761,8 +760,6 @@ public class FormLivros extends javax.swing.JFrame {
         dao.excluirLivro(obj);
 
     }//GEN-LAST:event_btnExcluirActionPerformed
-    //TODO parei aqui
-    //@Override
 
 
     private void tabelaLivrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaLivrosMouseClicked
@@ -781,25 +778,32 @@ public class FormLivros extends javax.swing.JFrame {
             txtSerie.setText(model.getValueAt(selectedRowIndex, 6).toString());
             txtEdicao.setText(model.getValueAt(selectedRowIndex, 7).toString());
             txtIdioma.setText(model.getValueAt(selectedRowIndex, 8).toString());
-            //txtFornecedor.setText((String) model.getValueAt(selectedRowIndex, 9));
             boxPiso.addItem((String) model.getValueAt(selectedRowIndex, 10));
             boxCorredor.addItem((String) model.getValueAt(selectedRowIndex, 11));
             boxPosicao.addItem((String) model.getValueAt(selectedRowIndex, 12));
             boxSecao.addItem((String) model.getValueAt(selectedRowIndex, 13));
-            boxDisponibilidade.addItem((Integer) model.getValueAt(selectedRowIndex, 14));
+
+            String boxDisponibilidadeString = String.valueOf(model.getValueAt(selectedRowIndex, 14));
+            LivroDao livrodao = new LivroDao();
+            int selectLivro = livrodao.getLivroIndex(boxDisponibilidadeString);
+            List<Livro> ListaLivro = livrodao.buscarLivros();
+            for (Livro f : ListaLivro) {
+                boxDisponibilidade.insertItemAt(f.getDisponibilidade(), boxDisponibilidade.getItemCount()); // era (f.getNome()) mas precisou soberscrecer mopetodo toString em fornecesdores
+            }
+            boxDisponibilidade.setSelectedIndex(selectLivro);
             txtAreaObservacoes.setText((String) model.getValueAt(selectedRowIndex, 15));
 
-            LivroDao dao = new LivroDao();
-            List<Livro> ListaLivros = dao.buscarLivros();
-            boxFornecedor.removeAllItems();
-            for (Livro f : ListaLivros) {
-                boxFornecedor.addItem(f.getFornecedor()/*.getTipos_de_usuarios()*/);
+            String boxFornecedorString = String.valueOf(model.getValueAt(selectedRowIndex, 9));
+            LivroDao livro = new LivroDao();
+            FornecedorDao dao = new FornecedorDao();
+            int select = livro.getFornecedorIndex(boxFornecedorString);
+            List<Fornecedor> ListaFornecedor = dao.listarFornecedores();
+            for (Fornecedor f : ListaFornecedor) {
+                boxFornecedor.insertItemAt(f, boxFornecedor.getItemCount()); // era (f.getNome()) mas precisou soberscrecer mopetodo toString em fornecesdores
             }
-            boxFornecedor.setSelectedItem(model.getValueAt(selectedRowIndex, 9));
-
-            ImageIcon iconLogo = new ImageIcon("C:\\goldenOwl\\images\\books\\" + txtIsbn.getText());
-
-            lblImagem.setIcon(iconLogo);
+            boxFornecedor.setSelectedIndex(select - 1);
+            String path = "C:\\goldenOwl\\images\\books\\" + txtIsbn.getText();
+            lblImagem.setIcon(ResizeBookImage(path));
         } catch (Exception ex) {
             Logger.getLogger(FormLivros.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -817,7 +821,6 @@ public class FormLivros extends javax.swing.JFrame {
         boxSecao.setSelectedIndex(-1);
         txtAreaObservacoes.selectAll();
         txtAreaObservacoes.replaceSelection("");
-        //boxDisponibilidade.addItem((String) model.getValueAt(selectedRowIndex, 14));
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
@@ -863,7 +866,6 @@ public class FormLivros extends javax.swing.JFrame {
                 c.getSecao(),
                 c.getDisponibilidade(),
                 c.getObservacoes()
-
             });
         }
     }//GEN-LAST:event_txtPesquisaLivrosKeyReleased
@@ -897,7 +899,7 @@ public class FormLivros extends javax.swing.JFrame {
             boxDisponibilidade.setSelectedItem(obj.getDisponibilidade());
             txtAreaObservacoes.setText(obj.getObservacoes());
 
-            ImageIcon iconLogo = new ImageIcon("C:\\goldenOwl\\images\\usuarios\\" + txtIsbn.getText());
+            ImageIcon iconLogo = new ImageIcon("C:\\goldenOwl\\images\\books\\" + txtIsbn.getText());
             lblImagem.setIcon(iconLogo);
 
         } else {
@@ -925,7 +927,7 @@ public class FormLivros extends javax.swing.JFrame {
         boxPiso.removeAllItems();
         OptionsDao dao = new OptionsDao();
         List<Options> ListaOptions = dao.listarPiso();
-        
+
         for (Options f : ListaOptions) {
             boxPiso.insertItemAt(f.getPiso(), boxPiso.getItemCount());
         }
@@ -955,11 +957,17 @@ public class FormLivros extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMapaActionPerformed
 
     private void boxDisponibilidadeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boxDisponibilidadeMouseClicked
-        OptionsDao dao = new OptionsDao();
-        List<Options> ListaOptions = dao.listarDisponibilidade();
-        boxDisponibilidade.removeAllItems(); //limpa
-        for (Options f : ListaOptions) {
-            boxDisponibilidade.addItem(f.getDisponibilidade());
+        try {
+            String boxDisponibilidadeString = String.valueOf(boxDisponibilidade.getSelectedIndex());
+            boxDisponibilidade.removeAllItems();
+            OptionsDao dao = new OptionsDao();
+            List<Options> ListaOptions = dao.listarDisponibilidade(); //boxDisponibilidadeString, Integer.parseInt(txtId.getText()));
+            for (Options f : ListaOptions) {
+                boxDisponibilidade.insertItemAt(f.getDisponibilidade(), boxDisponibilidade.getItemCount()); // era (f.getNome()) mas precisou soberscrecer mopetodo toString em fornecesdores
+            }
+            boxDisponibilidade.setSelectedItem(boxDisponibilidadeString);
+        } catch (Exception ex) {
+            Logger.getLogger(FormLivros.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_boxDisponibilidadeMouseClicked
 

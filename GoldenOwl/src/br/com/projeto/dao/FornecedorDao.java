@@ -178,7 +178,6 @@ public class FornecedorDao {
             PreparedStatement stmt = (PreparedStatement) conexao.prepareStatement(sql);
             stmt.setString(1, nome);
             ResultSet rs = stmt.executeQuery();
-            
             while(rs.next()){
             Fornecedor obj = new Fornecedor();
             obj.setId(rs.getInt("id"));
@@ -194,8 +193,6 @@ public class FornecedorDao {
             obj.setBairro(rs.getString("bairro"));
             obj.setCidade(rs.getString("cidade"));
             obj.setUf(rs.getString("estado"));
-
-
             lista.add(obj);  
             }
             return lista;

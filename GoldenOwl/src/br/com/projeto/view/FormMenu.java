@@ -259,7 +259,6 @@ public class FormMenu extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(FormMenu.class.getName()).log(Level.SEVERE, null, ex);
         }//totxt
-            //txtIp.getText();
             
         this.setVisible(true);
     }//GEN-LAST:event_formWindowActivated

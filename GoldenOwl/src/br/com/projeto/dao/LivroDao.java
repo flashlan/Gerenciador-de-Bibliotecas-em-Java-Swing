@@ -289,13 +289,13 @@ public class LivroDao {
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 value = rs.getString(table);
-                System.out.println("value dentro- " + value);
+                //System.out.println("value dentro- " + value);
             }
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("value fora- " + value);
+       // System.out.println("value fora- " + value);
         return value;
     }
     
@@ -309,6 +309,31 @@ public class LivroDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public int getFornecedorIndex(String name) throws SQLException {
+        int value = 0;
+        String sql = "select * from  tb_fornecedores where nome =  '" + name + "'"; 
+         java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);//createStatment nao suporta placeholders
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                value = Integer.parseInt(rs.getString("id"));
+                //System.out.println("value dentro- " + value);
+            }
+            stmt.close();
+            return value;
+    }
+    public int getLivroIndex(String name) throws SQLException {
+        int value = 0;
+        String sql = "select * from  tb_Livros where titulo =  '" + name + "'"; 
+         java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);//createStatment nao suporta placeholders
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                value = Integer.parseInt(rs.getString("id"));
+                //System.out.println("value dentro- " + value);
+            }
+            stmt.close();
+            return value;
     }
     
 }

@@ -6,19 +6,13 @@
 package br.com.projeto.dao;
 
 import br.com.projeto.jdbc.ConexaoBanco;
-import br.com.projeto.model.Livro;
 import br.com.projeto.model.Usuario;
-import br.com.projeto.view.FormEmprestimos;
-//import br.com.projeto.view.formLogin;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -125,30 +119,6 @@ public class UsuarioDao {
         }
     }
 
-    // função para unir botoes salvar e atualizar no mesmo botao, já detectando
-    // TODO
-//    public void checkIdExist(Usuario obj) {
-//        try {
-//            String sql = "SELECT  FROM tb_leitores WHERE id = ?";
-//            PreparedStatement stmt = (PreparedStatement) conexao.prepareStatement(sql);
-//            stmt.setInt(1, obj.getId());
-//
-//            try (ResultSet rs = stmt.executeQuery()){
-//                if (rs.next()) {
-//                    // por funcao "editar" aqui
-//                    JOptionPane.showMessageDialog(null, "Id já existe" + rs);
-//                    } else {
-//                    // por funcao  "novo" e "salvar" aqui
-//                    // implemetar um função para campos obrigatorios
-//                    JOptionPane.showMessageDialog(null, "Id não existe" + rs);
-//                    }
-//                }catch (SQLException e) {
-//                JOptionPane.showMessageDialog(null, "Eroo! " + e);
-//                    }
-//            } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(null, "Eroo! " + e);
-//            }
-//        } 
     //buscar usuarios com botao
     public Usuario buscarUsuario(String nome) {
         try {
@@ -157,7 +127,6 @@ public class UsuarioDao {
             stmt.setString(1, nome);
             ResultSet rs = stmt.executeQuery();
             Usuario obj = new Usuario();
-
             while (rs.next()) {
                 //obj.setId(rs.getInt("id"));
                 obj.setId(rs.getInt("id"));
@@ -179,15 +148,12 @@ public class UsuarioDao {
                 obj.setEmprestmax(rs.getInt("emprestmax"));
                 obj.setObservacoes(rs.getString("observacoes"));
                 obj.setTipo(rs.getString("tipo"));
-
             }
             return obj;
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Erro! " + e);
         }
         return null;
-
     }
 
     //filtrar usuarios
@@ -220,7 +186,6 @@ public class UsuarioDao {
                 obj.setEmprestmax(rs.getInt("emprestmax"));
                 obj.setObservacoes(rs.getString("observacoes"));
                 obj.setTipo(rs.getString("tipo"));
-
                 lista.add(obj);
             }
             return lista;
@@ -286,5 +251,4 @@ public class UsuarioDao {
         return id;
     }
 
-//função adiciona emprestimo no contador do usuario
 }

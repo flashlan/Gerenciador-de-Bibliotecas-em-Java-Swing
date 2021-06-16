@@ -851,7 +851,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Disponibilidade:"/>
+                <Property name="text" type="java.lang.String" value="*Disponibilidade:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblImagem">

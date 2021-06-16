@@ -223,24 +223,16 @@ public class EmprestimoDao {
     public void reemsprestaLivro(String disponibilidade, int iddoemprestimo) throws SQLException {
         String sql = "update tb_emprestimos set data_entrega_agendada = ? where id = " + iddoemprestimo;
         java.sql.PreparedStatement stmt = conexao.prepareStatement(sql);
-        
-       //get livro idponibilidade
-        
-        Timestamp now = new Timestamp(System.currentTimeMillis());//tempo agora
-         Timestamp newdata = this.addDays(now, Integer.parseInt(disponibilidade));
-        stmt.setString (1, String.valueOf(newdata));
-//        long _timeGap = now.getTime() - dataentregaagendada.getTime();
-//            long tempo = _timeGap / 1000 / 60 / 60 / 24;
-//            Long l = new Long(tempo);
-//            i = l.intValue();
 
+        //get livro idponibilidade
+        Timestamp now = new Timestamp(System.currentTimeMillis());//tempo agora
+        Timestamp newdata = this.addDays(now, Integer.parseInt(disponibilidade));
+        stmt.setString(1, String.valueOf(newdata));
         stmt.execute();
         stmt.close();
     }
 
     public void devolveLivro(int emprestimoId) throws SQLException, IOException {// não passa como objeto pois saida dos campos teve pós-formatação dos dados
-        //esta sobreescrevendo nome de funcionario pelo numero precisa gravar tb_funcionarios_iddevol
-        //implemet limpa tela
         String sql = "update tb_emprestimos as e "
                 + " INNER JOIN tb_leitores AS u ON (e.tb_leitores_id = u.id) "
                 // + " INNER JOIN tb_funcionarios AS f ON(e.tb_funcionarios_id = f.id) "
@@ -387,10 +379,8 @@ public class EmprestimoDao {
         int i;
         String emprestimoFormat = "";
         if (emprestimo.equals("1")) {
-            //emprestimo /24
             emprestimoFormat = "1 dia";
         } else {
-            //emprestimo /24
             emprestimoFormat = emprestimo + " dias";
         }
         if (dataentregaagendada != null) {
@@ -413,12 +403,9 @@ public class EmprestimoDao {
             if (emprestimo.equals("0")) {
                 d = "Volume para leitura nas dependências apenas";
             }
-
         }
-
         {
             return d;
         }
-
     }
 }

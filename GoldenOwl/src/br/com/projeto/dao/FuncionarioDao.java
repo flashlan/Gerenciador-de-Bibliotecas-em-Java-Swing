@@ -245,8 +245,6 @@ public class FuncionarioDao {
                 obj.setBairro(rs.getString("bairro"));
                 obj.setCidade(rs.getString("cidade"));
                 obj.setUf(rs.getString("estado"));
-
-                
                 lista.add(obj);
             }
             return lista;
@@ -287,7 +285,6 @@ public class FuncionarioDao {
                     JOptionPane.showMessageDialog(null, "Seja Bem Vindo ao Sistema, " + menu.usuarioLogado + "!");
                 }
                 
-                
             }else {
                    
                     FormLogin tlogin = new FormLogin();
@@ -295,8 +292,6 @@ public class FuncionarioDao {
                     tlogin.setLocationRelativeTo(null);
                     JOptionPane.showMessageDialog(null, "Dados Inválidos! Tente Novamente!");
                     tlogin.setVisible(true);
-                    
-                    
                    }
         } catch (SQLException e) {
             throw new RuntimeException(e);

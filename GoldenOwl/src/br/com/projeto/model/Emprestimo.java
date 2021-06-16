@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package br.com.projeto.model;
-
 import java.sql.Timestamp;
 
 import java.sql.Date;
