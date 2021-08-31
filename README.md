@@ -1,6 +1,6 @@
 # Gerenciador-de-Bibliotecas-em-Java-Swing
 
-This is the open source part of one my favourite personal project: a Library manager written in java swing.
+This is the open source part of one my favourite personal project: a Library manager  made from zero in java swing.
 
 The project is on more advanced stage than here, with coupon print module, import/export to .xlsx feature, id cards feature and I`m developing a z39.50 protocol binding 
 
