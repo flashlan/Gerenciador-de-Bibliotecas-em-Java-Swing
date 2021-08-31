@@ -15,4 +15,6 @@ and this repository will be updated...
 Currently it have binaries for Windows, Mac and Linux.
 
 
+if you interested in be a beta tester, invite me at datapoint.net@gmail.com
+
 thanks!
