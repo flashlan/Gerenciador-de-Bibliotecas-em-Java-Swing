@@ -20,4 +20,4 @@ if you interested in be a beta tester, invite me at datapoint.net@gmail.com
 thanks!
 
 
-![Screenshot](goldeowl sql model.png)
+![Screenshot](../master/goldeowl sql model.png)
