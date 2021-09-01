@@ -19,4 +19,5 @@ if you interested in be a beta tester, invite me at datapoint.net@gmail.com
 
 thanks!
 
-![Alt text](goldeowl sql model.png?raw=true "My Sql MOdel")
+
+![Screenshot](goldeowl sql model.png)
