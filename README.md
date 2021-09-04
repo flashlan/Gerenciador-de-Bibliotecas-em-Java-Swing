@@ -4,7 +4,7 @@ This is the open source part of one my favourite personal project: a Library man
 
 The project is on more advanced stage than here, with coupon print module, import/export to .xlsx feature, id cards feature and I`m developing a z39.50 protocol binding 
 
-Soon I setup de ci/cd (have lots for spring but none for Swing) to project and collect the first feedback from beta user  it will be divided in two parts:
+Soon I setup de ci/cd (it have lots of this kind of solution for spring framework but very hard to find one for Swing) to project and collect the first feedback from beta user  it will be divided in two parts:
 
 * A enterprise edition (for big libraries: eg: more tha 5000 volumes)
 * A community/open source edition (to personal use and for use in little libraries)
